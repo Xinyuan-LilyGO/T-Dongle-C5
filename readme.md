@@ -1,6 +1,7 @@
 <h1 align = "center">🎯 T-Dongle-C5 🌐</h1>
 
 ## 🌈Introduction
+
 | board       | MCU         | WIFI   | BLE     | Display                  | storage | Flash | PSRAM | RGB(LED) | Button | USB   |
 | ----------- | ----------- | ------ | ------- | ------------------------ | ------- | ----- | ----- | -------- | ------ | ----- |
 | T-Dongle-C5 | ESP32-C5HR8 | WIFI 6 | BLE 5.0 | ST7735-80*160(0.96 inch) | SD      | 16MB  | 8MB   | APA102   | Boot   | USB-A |
@@ -28,8 +29,10 @@ T-Dongle-C5
 ## 🚩Pinout Diagram
 | GPIO    | LCD      | LED    | SD     | UART     | Button | USB    |
 | ------- | -------- | ------ | ------ | -------- | ------ | ------ |
-| GPIO_2  | LCD_MOSI | LED_DI | SD_CMD |          |        |        |
-| GPIO_7  | LCD_MISO | LED_CI | SD_D0  |          |        |        |
+| GPIO_2  | LCD_MOSI |        | SD_CMD |          |        |        |
+| GPIO_4  |          | LED_CI |        |          |        |        |
+| GPIO_5  |          | LED_DI |        |          |        |        |
+| GPIO_7  | LCD_MISO |        | SD_D0  |          |        |        |
 | GPIO_6  | LCD_SCK  |        | SD_CLK |          |        |        |
 | GPIO_10 | LCD_CS   |        |        |          |        |        |
 | GPIO_3  | LCD_RS   |        |        |          |        |        |
@@ -45,11 +48,11 @@ T-Dongle-C5
 ## ⚙️Quick Start
 - The IDF installation method is also inconsistent depending on the system, it is recommended to refer to the [official manual](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/index.html) for installation
 
-| software   | supported | version                 |
-| ---------- | --------- | ----------------------- |
-| ESP-IDF    | ✅         | v5.5 or higher          |
-| PlatfromIO | ❌         | Not currently supported |
-| Arduino    | ✅         | v3.3.0 or higher        |
+| software   | supported | version          |
+| ---------- | --------- | ---------------- |
+| ESP-IDF    | ✅         | v5.5 or higher   |
+| PlatfromIO | ✅         |                  |
+| Arduino    | ✅         | v3.3.0 or higher |
 
 ## 🚀FAQ 
 

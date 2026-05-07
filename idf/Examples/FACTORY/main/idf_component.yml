@@ -1,4 +1,0 @@
-dependencies:
-  idf: ">=4.4"
-  lvgl/lvgl: 9.2.0
-  espressif/button: ^4.1.3

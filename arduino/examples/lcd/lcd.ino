@@ -1,8 +1,21 @@
 #include <Arduino.h>
-#include "pin_config.h"
 #include "SPI.h"
 #include <lvgl.h>
 #include "st7735.h"
+
+#define SPI_MOSI 2
+#define SPI_MISO 7
+#define SPI_SCK  6
+
+#define TFT_HOR_RES 80
+#define TFT_VER_RES 160
+
+#define PIN_LCD_MOSI  SPI_MOSI
+#define PIN_LCD_SCK   SPI_SCK
+#define PIN_LCD_BL    0
+#define PIN_LCD_RST   1
+#define PIN_LCD_DC    3
+#define PIN_LCD_CS    10
 
 Adafruit_ST7735 tft = Adafruit_ST7735(PIN_LCD_CS, PIN_LCD_DC, PIN_LCD_RST, PIN_LCD_SCK, PIN_LCD_MOSI);
 // SPI配置
