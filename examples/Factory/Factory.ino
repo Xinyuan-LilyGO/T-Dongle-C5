@@ -7,6 +7,10 @@
 #include "SD.h"
 #include <APA102.h>
 #include "LilyGo_Button.h"
+#include "WiFi.h"
+
+#define WIFI_SSID "xinyuandianzi"
+#define WIFI_PASSWORD "AA15994823428"
 
 #define APA102_LED_NUMBERS 1
 APA102<LED_DI_PIN, LED_CI_PIN> ledStrip;
@@ -26,6 +30,8 @@ lv_obj_t *label;
 lv_obj_t *sd_size_label;
 lv_obj_t *sd_type_label;
 lv_obj_t *sd_status_label;
+lv_obj_t *wifi_status_label;
+lv_obj_t *wifi_rssi_label;
 
 void my_disp_flush(lv_disp_drv_t *disp_drv, const lv_area_t *area, lv_color_t *color_p);
 void lvgl_init();
@@ -274,10 +280,14 @@ void testFileIO(fs::FS &fs, const char *path)
 
 void boot_btn_cb(ButtonState event)
 {
+  static bool lcd_on = true;
   switch (event)
   {
   case BTN_CLICK_EVENT:
     Serial.println("boot btn pressed");
+    lcd_on = !lcd_on;
+    pinMode(PIN_LCD_BL, OUTPUT);
+    digitalWrite(PIN_LCD_BL, lcd_on ? 0 : 1);
     break;
   }
 }
@@ -322,26 +332,32 @@ void setup()
   label = lv_label_create(src);
   lv_label_set_text(label, "T-Dongle-C5");
   lv_obj_set_style_text_color(label, lv_color_hex(0xFFFFFF), 0);
-  lv_obj_set_style_text_font(label, &lv_font_montserrat_12, 0);
+  lv_obj_set_style_text_font(label, &lv_font_unscii_8, 0);
   lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 0);
 
   sd_status_label = lv_label_create(src);
   lv_label_set_text(sd_status_label, SD_Mount ? "SD: Mounted" : "SD: Not Mounted");
   lv_obj_set_style_text_color(sd_status_label, SD_Mount ? lv_color_hex(0x00FF00) : lv_color_hex(0xFF0000), 0);
-  lv_obj_set_style_text_font(sd_status_label, &lv_font_montserrat_12, 0);
-  lv_obj_align_to(sd_status_label, label, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
-
-  sd_type_label = lv_label_create(src);
-  lv_label_set_text(sd_type_label, "Type: --");
-  lv_obj_set_style_text_color(sd_type_label, lv_color_hex(0xFFFFFF), 0);
-  lv_obj_set_style_text_font(sd_type_label, &lv_font_montserrat_12, 0);
-  lv_obj_align_to(sd_type_label, sd_status_label, LV_ALIGN_OUT_BOTTOM_MID, 0, 2);
+  lv_obj_set_style_text_font(sd_status_label, &lv_font_unscii_8, 0);
+  lv_obj_align(sd_status_label, LV_ALIGN_TOP_MID, 0, 14);
 
   sd_size_label = lv_label_create(src);
   lv_label_set_text(sd_size_label, "Size: -- MB");
   lv_obj_set_style_text_color(sd_size_label, lv_color_hex(0xFFFFFF), 0);
-  lv_obj_set_style_text_font(sd_size_label, &lv_font_montserrat_12, 0);
-  lv_obj_align_to(sd_size_label, sd_type_label, LV_ALIGN_OUT_BOTTOM_MID, 0, 2);
+  lv_obj_set_style_text_font(sd_size_label, &lv_font_unscii_8, 0);
+  lv_obj_align(sd_size_label, LV_ALIGN_TOP_MID, 0, 14 * 2);
+
+  wifi_status_label = lv_label_create(src);
+  lv_label_set_text(wifi_status_label, "WiFi: --");
+  lv_obj_set_style_text_color(wifi_status_label, lv_color_hex(0xFFFFFF), 0);
+  lv_obj_set_style_text_font(wifi_status_label, &lv_font_unscii_8, 0);
+  lv_obj_align(wifi_status_label, LV_ALIGN_TOP_MID, 0, 14 * 3);
+
+  wifi_rssi_label = lv_label_create(src);
+  lv_label_set_text(wifi_rssi_label, "Rssi: -- dBm");
+  lv_obj_set_style_text_color(wifi_rssi_label, lv_color_hex(0xFFFFFF), 0);
+  lv_obj_set_style_text_font(wifi_rssi_label, &lv_font_unscii_8, 0);
+  lv_obj_align(wifi_rssi_label, LV_ALIGN_TOP_MID, 0, 14 * 4);
 
   if (SD_Mount)
   {
@@ -364,21 +380,43 @@ void setup()
     Serial.printf("Total space: %lluMB\n", SD.totalBytes() / (1024 * 1024));
     Serial.printf("Used space: %lluMB\n", SD.usedBytes() / (1024 * 1024));
 
-    // 更新 SD 卡类型标签
-    const char *type_str = "UNKNOWN";
-    if (cardType == CARD_MMC)
-      type_str = "MMC";
-    else if (cardType == CARD_SD)
-      type_str = "SDSC";
-    else if (cardType == CARD_SDHC)
-      type_str = "SDHC";
+    // // 更新 SD 卡类型标签
+    // const char *type_str = "UNKNOWN";
+    // if (cardType == CARD_MMC)
+    //   type_str = "MMC";
+    // else if (cardType == CARD_SD)
+    //   type_str = "SDSC";
+    // else if (cardType == CARD_SDHC)
+    //   type_str = "SDHC";
 
-    lv_label_set_text_fmt(sd_type_label, "Type: %s", type_str);
+    // lv_label_set_text_fmt(sd_type_label, "Type: %s", type_str);
 
     lv_label_set_text_fmt(sd_size_label, "Size: %lluMB", cardSize);
   }
-
+ 
   xTaskCreate(led_task, "led_task", 4096, NULL, 1, NULL);
+
+  Serial.println("Connecting to WiFi...");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  
+  int attempts = 0;
+  while (WiFi.status() != WL_CONNECTED && attempts < 20) {
+    delay(500);
+    Serial.print(".");
+    attempts++;
+  }
+
+  
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("\nWiFi connected");
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+    lv_label_set_text_fmt(wifi_status_label, "%s", WIFI_SSID);
+  } else {
+    Serial.println("\nWiFi connection failed");
+    lv_label_set_text(wifi_status_label, "WiFi: DisConnected");
+  }
+  
 }
 
 void led_task(void *pvParameters)
@@ -416,4 +454,6 @@ void lvgl_task(void *pvParameters)
 
 void loop()
 {
+  lv_label_set_text_fmt(wifi_rssi_label, "Rssi: %d dBm", WiFi.RSSI());
+  vTaskDelay(1000 / portTICK_PERIOD_MS);
 }

@@ -380,7 +380,7 @@
 
 /*Pixel perfect monospace fonts*/
 #define LV_FONT_UNSCII_8  1
-#define LV_FONT_UNSCII_16 0
+#define LV_FONT_UNSCII_16 1
 
 /*Optionally declare custom fonts here.
  *You can use these fonts as default font too and they will be available globally.
