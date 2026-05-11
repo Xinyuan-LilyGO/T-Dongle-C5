@@ -65,4 +65,5 @@ T-Dongle-C5
 | Arduino    | ✅         | v3.3.0 or higher |
 
 ## 🚀FAQ 
-
+### 1.How to operate when using an external antenna?
+>- ![alt text](image/RF_ipex_user.png)
