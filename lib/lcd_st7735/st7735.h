@@ -100,6 +100,7 @@ private:
     uint16_t x_gap = 26;
     uint16_t y_gap = 1;
     uint16_t _rotation = 0;
+    bool _inTransaction = false;
 
     void sendInitCommands();
     void writeCommand(uint8_t c);

@@ -36,5 +36,8 @@ def copy_firmware_files(source, target, env):
 
     print(f">>> [Extra Script] 复制完成，共处理 {copied_count} 个文件。")
 
-# 注册构建后动作：当 'buildprog' 任务完成时，执行 copy_firmware_files 函数
-env.AddPostAction("buildprog", copy_firmware_files)
+# 注册构建后动作：当固件 .bin 文件生成完成时，执行 copy_firmware_files 函数
+env.AddPostAction("$BUILD_DIR/${PROGNAME}.bin", copy_firmware_files)
+
+# 注册上传前动作：确保即使没有重新编译，上传前也会执行复制操作
+env.AddPreAction("upload", copy_firmware_files)

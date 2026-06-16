@@ -62,8 +62,9 @@ void Adafruit_ST7735::setRotation(uint8_t m)
 
 void Adafruit_ST7735::startWrite()
 {
+    SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
     digitalWrite(_cs, LOW);
-    SPI.beginTransaction(SPISettings(40000000, MSBFIRST, SPI_MODE0));
+    _inTransaction = true;
 }
 
 void Adafruit_ST7735::writePixels(uint16_t *pixels, uint32_t len)
@@ -74,28 +75,29 @@ void Adafruit_ST7735::writePixels(uint16_t *pixels, uint32_t len)
 
 void Adafruit_ST7735::endWrite()
 {
+    _inTransaction = false;
     digitalWrite(_cs, HIGH);
     SPI.endTransaction();
 }
 
 void Adafruit_ST7735::drawPixel(int16_t x, int16_t y, uint16_t color)
 {
-    setAddrWindow(x, y, x + 1, y + 1);
+    startWrite();  
+    setAddrWindow(0, 0, _width - 1, _height - 1);
     digitalWrite(_dc, HIGH);
-    SPI.transfer16(color);
-    digitalWrite(_cs, HIGH);
+    for (uint32_t i = 0; i < _width * _height; i++)
+        SPI.transfer16(color);
+    endWrite();
 }
 
 void Adafruit_ST7735::fillScreen(uint16_t color)
 {
+    startWrite();  
     setAddrWindow(0, 0, _width - 1, _height - 1);
     digitalWrite(_dc, HIGH);
-    digitalWrite(_cs, LOW);
     for (uint32_t i = 0; i < _width * _height; i++)
-    {
         SPI.transfer16(color);
-    }
-    digitalWrite(_cs, HIGH);
+    endWrite();
 }
 
 void Adafruit_ST7735::sendInitCommands()
@@ -175,15 +177,31 @@ void Adafruit_ST7735::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint1
 void Adafruit_ST7735::writeCommand(uint8_t c)
 {
     digitalWrite(_dc, LOW);
-    digitalWrite(_cs, LOW);
+    if (!_inTransaction)
+    {
+        SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
+        digitalWrite(_cs, LOW);
+    }
     SPI.transfer(c);
-    digitalWrite(_cs, HIGH);
+    if (!_inTransaction)
+    {
+        digitalWrite(_cs, HIGH);
+        SPI.endTransaction();
+    }
 }
 
 void Adafruit_ST7735::spiWrite(uint8_t d)
 {
     digitalWrite(_dc, HIGH);
-    digitalWrite(_cs, LOW);
+    if (!_inTransaction)
+    {
+        SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
+        digitalWrite(_cs, LOW);
+    }
     SPI.transfer(d);
-    digitalWrite(_cs, HIGH);
+    if (!_inTransaction)
+    {
+        digitalWrite(_cs, HIGH);
+        SPI.endTransaction();
+    }
 }
