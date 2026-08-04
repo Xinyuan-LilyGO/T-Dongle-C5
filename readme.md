@@ -64,6 +64,12 @@ T-Dongle-C5
 | ESP-IDF    | ✅         | v5.5 or higher   |
 | Arduino    | ✅         | v3.3.0 or higher |
 
+## 💪Firmware
+>- Firmware:`firmware/T-Dongle-C5-Factory_V1.4_0616.bin`
+>- Tools: `tools/flash_download_tool`
+>- Use the `esp_tools` software with version 3.9.8 or above to burn the firmware.
+>- ![alt text](image/firmware.png)
+
 ## 🚀FAQ 
 ### 1.How to operate when using an external antenna?
 >- ![alt text](image/RF_ipex_user.png)
