@@ -71,10 +71,10 @@ T-Dongle-C5
 >- chip: Select ESP32C5 USB download
 >- Use the `esp_tools` software with version 3.9.8 or above to burn the firmware.
 
->- ![alt text](image/boot.png)
->- ![alt text](image/loaddown_chip.png)
->- ![alt text](image/firmware.png)
+>- ![boot](image/boot.png)
+>- ![burn_chip](image/burn_chip.png)
+>- ![firmware](image/firmware.png)
 
 ## 🚀FAQ 
 ### 1.How to operate when using an external antenna?
->- ![alt text](image/RF_ipex_user.png)
+>- ![RF_ipex_user](image/RF_ipex_user.png)
