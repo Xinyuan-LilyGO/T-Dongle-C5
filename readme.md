@@ -65,9 +65,14 @@ T-Dongle-C5
 | Arduino    | ✅         | v3.3.0 or higher |
 
 ## 💪Firmware
+>- Before burning, press and hold the BOOT button and insert it into the computer. This will enter the burning and download mode. Once the serial port is recognized, open the burning tool.
 >- Firmware:`firmware/T-Dongle-C5-Factory_V1.4_0616.bin`
 >- Tools: `tools/flash_download_tool`
+>- chip: Select ESP32C5 USB download
 >- Use the `esp_tools` software with version 3.9.8 or above to burn the firmware.
+
+>- ![alt text](image/boot.png)
+>- ![alt text](image/loaddown_chip.png)
 >- ![alt text](image/firmware.png)
 
 ## 🚀FAQ 
