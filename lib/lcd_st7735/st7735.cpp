@@ -82,11 +82,13 @@ void Adafruit_ST7735::endWrite()
 
 void Adafruit_ST7735::drawPixel(int16_t x, int16_t y, uint16_t color)
 {
-    startWrite();  
-    setAddrWindow(0, 0, _width - 1, _height - 1);
+    if (x < 0 || y < 0 || x >= _width || y >= _height)
+        return;
+
+    startWrite();
+    setAddrWindow(x, y, x, y);
     digitalWrite(_dc, HIGH);
-    for (uint32_t i = 0; i < _width * _height; i++)
-        SPI.transfer16(color);
+    SPI.transfer16(color);
     endWrite();
 }
 

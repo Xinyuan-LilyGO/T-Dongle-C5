@@ -97,8 +97,8 @@ void my_disp_flush(lv_disp_drv_t *drv, const lv_area_t *area, lv_color_t *color_
 {
     uint32_t w = area->x2 - area->x1 + 1;
     uint32_t h = area->y2 - area->y1 + 1;
-    tft.setAddrWindow(area->x1, area->y1, area->x2, area->y2);
     tft.startWrite();
+    tft.setAddrWindow(area->x1, area->y1, area->x2, area->y2);
     tft.writePixels((uint16_t *)color_p, w * h);
     tft.endWrite();
     lv_disp_flush_ready(drv);
